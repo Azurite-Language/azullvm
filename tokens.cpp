@@ -1,5 +1,7 @@
 #include "tokens.h"
+#include "util.h"
 #include <unordered_map>
+
 bool isNumber(const std::string &str)
 {
     if (str.empty() || (str[0] != '-' && !isdigit(str[0])))
@@ -21,6 +23,7 @@ TOKENS getToken(std::string &str)
             {"ADD", TOKENS_TYPE::ADD},
             {"SUB", TOKENS_TYPE::SUB},
             {"LT", TOKENS_TYPE::LT},
+            {"MUL", TOKENS_TYPE::MUL},
             {"WITH", TOKENS_TYPE::WITH},
             {"END_WITH", TOKENS_TYPE::END_WITH},
             {"USING", TOKENS_TYPE::USING},
@@ -33,6 +36,15 @@ TOKENS getToken(std::string &str)
             {"THEN", TOKENS_TYPE::THEN},
             {"ELSE", TOKENS_TYPE::ELSE},
             {"END_IF", TOKENS_TYPE::END_IF},
+            {"TYPE", TOKENS_TYPE::TYPE},
+            {"END_TYPE", TOKENS_TYPE::END_TYPE},
+            {"COUNT", TOKENS_TYPE::COUNT},
+            {"END_COUNT", TOKENS_TYPE::END_COUNT},
+            {"ALLOCATE", TOKENS_TYPE::ALLOCATE},
+            {"NTH", TOKENS_TYPE::NTH},
+            {"SET", TOKENS_TYPE::SET},
+            {"DO", TOKENS_TYPE::DO},
+            {"END_DO", TOKENS_TYPE::END_DO}
         };
     auto it = tokens_list.find(str);
     if (it != tokens_list.end())
@@ -60,4 +72,13 @@ const std::string getTokenName(TOKENS_TYPE token)
         return "UNKNOWN";
     }
     return "";
+}
+
+llvm::Type *get_type(const std::string type)
+{
+    if (type == "num")
+        return llvm::Type::getInt32Ty(*util::TheContext);
+    if (type == "list")
+        return llvm::Type::getInt32PtrTy(*util::TheContext);
+    return nullptr;
 }

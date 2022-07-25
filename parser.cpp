@@ -35,16 +35,49 @@ std::unique_ptr<FunctionAST> parseFunction(std::istream &is)
     is >> name;
     assert(getNextToken(is).type == TOKENS_TYPE::USING);
     std::vector<std::string> args;
+    std::vector<std::string> types;
     TOKENS token = getNextToken(is);
     while (token.type != TOKENS_TYPE::END_USING && is)
     {
         args.push_back(token.value);
+        std::string type;
+        is >> type;
+        types.push_back(type);
         token = getNextToken(is);
     }
-    auto proto = std::make_unique<PrototypeAST>(name, args);
+    auto proto = std::make_unique<PrototypeAST>(name, args, types);
     auto body = parseToken(is);
     assert(getNextToken(is).type == TOKENS_TYPE::END_FUNCTION);
     return std::make_unique<FunctionAST>(std::move(proto), std::move(body));
+}
+
+std::unique_ptr<AllocaExprAST> parseAllocate(std::istream &is)
+{
+    assert(getNextToken(is).type == TOKENS_TYPE::TYPE);
+    auto type = getNextToken(is).value;
+    assert(getNextToken(is).type == TOKENS_TYPE::END_TYPE);
+
+    assert(getNextToken(is).type == TOKENS_TYPE::COUNT);
+    auto count = parseToken(is);
+    assert(getNextToken(is).type == TOKENS_TYPE::END_COUNT);
+    return std::make_unique<AllocaExprAST>(type, std::move(count));
+}
+
+std::unique_ptr<VariadicOperatorExprAST> parseVariadic(TOKENS_TYPE type, std::istream &is)
+{
+    assert(getNextToken(is).type == TOKENS_TYPE::WITH);
+    auto token = getNextToken(is);
+    std::vector<std::unique_ptr<ExprAST>> body;
+    while (token.type != TOKENS_TYPE::END_WITH && is)
+    {
+        assert(token.type == TOKENS_TYPE::WITH);
+        auto expr = parseToken(is);
+        assert(getNextToken(is).type == TOKENS_TYPE::END_WITH);
+        body.push_back(std::move(expr));
+        token = getNextToken(is);
+    }
+    return std::make_unique<VariadicOperatorExprAST>(type, std::move(body));
+
 }
 
 std::unique_ptr<ExprAST> parseToken(std::istream &in)
@@ -88,9 +121,17 @@ std::unique_ptr<ExprAST> parseToken(std::istream &in)
     {
         return parseIf(in);
     }
+    if (token.type == TOKENS_TYPE::ALLOCATE)
+    {
+        return parseAllocate(in);
+    }
     if (token.value == "")
     {
         return nullptr;
+    }
+    if (token.isVariadic())
+    {
+        return parseVariadic(token.type,in);
     }
 
     return std::make_unique<VariableExprAST>(token.value);

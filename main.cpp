@@ -5,10 +5,10 @@
 #include <cassert>
 #include <fstream>
 #include "parser.h"
-
+#include "util.h"
 int main(void)
 {
-    init();
+    // util::init();
     std::ifstream is("output.prellvm");
     std::ofstream os("output.ll");
     while (is.good() || !is.eof() || is)

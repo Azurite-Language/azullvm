@@ -62,11 +62,12 @@ class PrototypeAST : public ExprAST
 {
   std::string Name;
   std::vector<std::string> Args;
+  std::vector<std::string> Types;
 
 public:
   virtual llvm::Value *codegen() override;
-  PrototypeAST(const std::string &Name, std::vector<std::string> Args)
-      : Name(Name), Args(Args) {}
+  PrototypeAST(const std::string &Name, std::vector<std::string> Args, std::vector<std::string> Types)
+      : Name(Name), Args(Args), Types(Types) {}
 
   const std::string &getName() const { return Name; }
   const std::vector<std::string> &getArgs() const { return Args; }
@@ -100,6 +101,38 @@ public:
   virtual void print(std::ostream &os) const override;
 };
 
+class AllocaExprAST : public ExprAST
+{
+  std::string Type;
+  std::unique_ptr<ExprAST> SizeAST;
+
+public:
+  AllocaExprAST(std::string Type, std::unique_ptr<ExprAST> Size) : Type(Type), SizeAST(std::move(Size)) {}
+  virtual llvm::Value *codegen() override;
+  virtual void print(std::ostream &os) const override;
+};
+
+class DoExprAST : public ExprAST
+{
+  std::vector<std::unique_ptr<ExprAST>> Body;
+  std::unique_ptr<ExprAST> returnValue;
+
+public:
+  DoExprAST(std::vector<std::unique_ptr<ExprAST>> Body, std::unique_ptr<ExprAST> returnValue) : Body(std::move(Body)), returnValue(std::move(returnValue)) {}
+  virtual llvm::Value *codegen() override;
+  virtual void print(std::ostream &os) const override;
+};
+
+class VariadicOperatorExprAST : public ExprAST
+{
+  TOKENS_TYPE Op;
+  std::vector<std::unique_ptr<ExprAST>> Args;
+
+public:
+  VariadicOperatorExprAST(TOKENS_TYPE Op, std::vector<std::unique_ptr<ExprAST>> Args) : Op(Op), Args(std::move(Args)) {}
+  virtual llvm::Value *codegen() override;
+  virtual void print(std::ostream &os) const override;
+};
+
 void init();
 void printModule(llvm::raw_ostream &os);
-// end anonymous namespace
