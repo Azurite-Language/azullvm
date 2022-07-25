@@ -62,3 +62,17 @@ void IfExprAST::print(std::ostream &os) const
         Else->print(os);
     }
 }
+
+void AllocaExprAST::print(std::ostream &os) const
+{
+    os << "alloca " << Type << " ";
+}
+
+void VariadicOperatorExprAST::print(std::ostream &os) const
+{
+    os << "variadic ";
+    for (auto &it : Args)
+    {
+        it->print(os);
+    }
+}
