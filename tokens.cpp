@@ -44,7 +44,8 @@ TOKENS getToken(std::string &str)
             {"NTH", TOKENS_TYPE::NTH},
             {"SET", TOKENS_TYPE::SET},
             {"DO", TOKENS_TYPE::DO},
-            {"END_DO", TOKENS_TYPE::END_DO}
+            {"END_DO", TOKENS_TYPE::END_DO},
+            {"RETURN", TOKENS_TYPE::RETURN}
         };
     auto it = tokens_list.find(str);
     if (it != tokens_list.end())

@@ -14,13 +14,15 @@
  */
 std::unique_ptr<IfExprAST> parseIf(std::istream &is)
 {
+    assert(getNextToken(is).type == TOKENS_TYPE::RETURN);
+    auto return_type = getNextToken(is).value;
     auto cond = parseToken(is);
     assert(getNextToken(is).type == TOKENS_TYPE::THEN);
     auto then = parseToken(is);
     assert(getNextToken(is).type == TOKENS_TYPE::ELSE);
     auto else_ = parseToken(is);
     assert(getNextToken(is).type == TOKENS_TYPE::END_IF);
-    return std::make_unique<IfExprAST>(std::move(cond), std::move(then), std::move(else_));
+    return std::make_unique<IfExprAST>(std::move(cond), std::move(then), std::move(else_), return_type);
 }
 
 /**
@@ -45,7 +47,10 @@ std::unique_ptr<FunctionAST> parseFunction(std::istream &is)
         types.push_back(type);
         token = getNextToken(is);
     }
-    auto proto = std::make_unique<PrototypeAST>(name, args, types);
+    assert(getNextToken(is).type == TOKENS_TYPE::RETURN);
+    std::string return_type;
+    is >> return_type;
+    auto proto = std::make_unique<PrototypeAST>(name, args, types, return_type);
     auto body = parseToken(is);
     assert(getNextToken(is).type == TOKENS_TYPE::END_FUNCTION);
     return std::make_unique<FunctionAST>(std::move(proto), std::move(body));

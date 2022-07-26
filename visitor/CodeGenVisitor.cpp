@@ -96,7 +96,7 @@ llvm::Value *PrototypeAST::codegen()
     {
         types.push_back(get_type(arg));
     }
-    llvm::FunctionType *FT = llvm::FunctionType::get(get_type("num"), types, false);
+    llvm::FunctionType *FT = llvm::FunctionType::get(get_type(ReturnType), types, false);
     llvm::Function *F = llvm::Function::Create(FT, llvm::Function::ExternalLinkage, Name, util::TheModule.get());
 
     unsigned Idx = 0;
@@ -172,7 +172,7 @@ llvm::Value *IfExprAST::codegen()
     // Emit merge block.
     TheFunction->getBasicBlockList().push_back(MergeBB);
     util::Builder->SetInsertPoint(MergeBB);
-    PHINode *PN = util::Builder->CreatePHI(get_type("num"), 2, "iftmp");
+    PHINode *PN = util::Builder->CreatePHI(get_type(ReturnType), 2, "iftmp");
 
     PN->addIncoming(ThenV, ThenBB);
     PN->addIncoming(ElseV, ElseBB);

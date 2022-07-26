@@ -63,11 +63,12 @@ class PrototypeAST : public ExprAST
   std::string Name;
   std::vector<std::string> Args;
   std::vector<std::string> Types;
+  std::string ReturnType;
 
 public:
   virtual llvm::Value *codegen() override;
-  PrototypeAST(const std::string &Name, std::vector<std::string> Args, std::vector<std::string> Types)
-      : Name(Name), Args(Args), Types(Types) {}
+  PrototypeAST(const std::string &Name, std::vector<std::string> Args, std::vector<std::string> Types, std::string ReturnType)
+      : Name(Name), Args(Args), Types(Types), ReturnType(ReturnType) {}
 
   const std::string &getName() const { return Name; }
   const std::vector<std::string> &getArgs() const { return Args; }
@@ -92,12 +93,12 @@ public:
 class IfExprAST : public ExprAST
 {
   std::unique_ptr<ExprAST> Cond, Then, Else;
-
+  std::string ReturnType;
 public:
   virtual llvm::Value *codegen() override;
   IfExprAST(std::unique_ptr<ExprAST> Cond, std::unique_ptr<ExprAST> Then,
-            std::unique_ptr<ExprAST> Else)
-      : Cond(std::move(Cond)), Then(std::move(Then)), Else(std::move(Else)) {}
+            std::unique_ptr<ExprAST> Else, std::string ReturnType)
+      : Cond(std::move(Cond)), Then(std::move(Then)), Else(std::move(Else)), ReturnType(ReturnType) {}
   virtual void print(std::ostream &os) const override;
 };
 

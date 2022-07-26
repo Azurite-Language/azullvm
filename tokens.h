@@ -29,6 +29,7 @@ enum class TOKENS_TYPE
     SET,
     DO,
     END_DO,
+    RETURN,
     NUMBER
 };
 
