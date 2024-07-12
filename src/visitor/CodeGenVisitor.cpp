@@ -1,5 +1,5 @@
-#include "../ast/ast.h"
-#include "../util.h"
+#include "ast/ast.h"
+#include "util.h"
 
 using namespace llvm;
 
@@ -50,11 +50,17 @@ llvm::Value *BinaryExprAST::codegen()
     case TOKENS_TYPE::MUL:
         Res = util::Builder->CreateMul(L, R, "multmp");
         break;
-    case TOKENS_TYPE::NTH:
-    {
-        auto t = (llvm::AllocaInst *)L;
-        Res = util::Builder->CreateLoad(util::Builder->CreateGEP(t, R, "nthtmp"));
-    }
+    // case TOKENS_TYPE::NTH:
+    // {
+    //     auto t = (llvm::AllocaInst *)L;
+    //     Res = util::Builder->CreateLoad(util::Builder->CreateGEP(t, R, "nthtmp"));
+    // }
+    break;
+    case TOKENS_TYPE::STORE:
+        Res = util::Builder->CreateStore(R, L);
+    break;
+    case TOKENS_TYPE::LOAD:
+        Res = util::Builder->CreateLoad(L);
     break;
     // case TOKENS_TYPE::DIVIDE:
     //     Res = Builder->CreateFDiv(L, R, "divtmp");
@@ -198,10 +204,16 @@ llvm::Value *VariadicOperatorExprAST::codegen()
             Res = expr->codegen();
         }
         break;
-    case TOKENS_TYPE::SET:
+    case TOKENS_TYPE::GET:
     {
-        auto t = (llvm::AllocaInst *)Args[0]->codegen();
-        Res = util::Builder->CreateStore(Args[2]->codegen(), util::Builder->CreateGEP(t, Args[1]->codegen(), "settmp"));
+        auto idx_list = std::vector<llvm::Value *>();
+        llvm::ArrayRef<llvm::Value *> idx_ref(idx_list);
+        
+        for (int i = 1; i < Args.size(); i++)
+        {
+            idx_list.push_back(Args[i]->codegen());
+        }
+        Res = util::Builder->CreateGEP(Args[0]->codegen(), idx_list, "gettmp");
     }
     break;
     }

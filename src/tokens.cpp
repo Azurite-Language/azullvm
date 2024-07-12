@@ -41,8 +41,9 @@ TOKENS getToken(std::string &str)
             {"COUNT", TOKENS_TYPE::COUNT},
             {"END_COUNT", TOKENS_TYPE::END_COUNT},
             {"ALLOCATE", TOKENS_TYPE::ALLOCATE},
-            {"NTH", TOKENS_TYPE::NTH},
-            {"SET", TOKENS_TYPE::SET},
+            {"NTH", TOKENS_TYPE::GET},
+            {"SET", TOKENS_TYPE::STORE},
+            {"LOAD", TOKENS_TYPE::LOAD},
             {"DO", TOKENS_TYPE::DO},
             {"END_DO", TOKENS_TYPE::END_DO},
             {"RETURN", TOKENS_TYPE::RETURN}

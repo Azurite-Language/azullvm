@@ -3,7 +3,7 @@
 #include <memory>
 #include "ExprAST.h"
 #include <vector>
-#include "../tokens.h"
+#include "tokens.h"
 
 /// NumberExprAST - Expression class for numeric literals like "1.0".
 class NumberExprAST : public ExprAST

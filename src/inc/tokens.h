@@ -25,12 +25,15 @@ enum class TOKENS_TYPE
     COUNT,
     END_COUNT,
     ALLOCATE,
-    NTH,
-    SET,
+    GET,
+    LOAD,
+    STORE,
     DO,
     END_DO,
     RETURN,
-    NUMBER
+    NUMBER,
+    SET,
+    NTH
 };
 
 class TOKENS
@@ -39,8 +42,8 @@ public:
     std::string value;
     TOKENS_TYPE type;
     TOKENS(std::string value, TOKENS_TYPE type) : value(value), type(type) {}
-    bool isOperator() const { return type == TOKENS_TYPE::ADD || type == TOKENS_TYPE::SUB || type == TOKENS_TYPE::LT || type == TOKENS_TYPE::MUL || type == TOKENS_TYPE::NTH; }
-    bool isVariadic() const { return type == TOKENS_TYPE::DO || type == TOKENS_TYPE::SET; }
+    bool isOperator() const { return type == TOKENS_TYPE::ADD || type == TOKENS_TYPE::SUB || type == TOKENS_TYPE::LT || type == TOKENS_TYPE::MUL || type == TOKENS_TYPE::LOAD || type == TOKENS_TYPE::STORE; }
+    bool isVariadic() const { return type == TOKENS_TYPE::DO || type == TOKENS_TYPE::SET || type == TOKENS_TYPE::GET ; }
 };
 
 enum class OPERATOR

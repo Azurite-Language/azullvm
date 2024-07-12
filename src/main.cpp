@@ -6,11 +6,17 @@
 #include <fstream>
 #include "parser.h"
 #include "util.h"
-int main(void)
+int main(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        std::cerr << "Usage: " << argv[0] << " <filename>" << std::endl;
+        return 1;
+    }
     // util::init();
-    std::ifstream is("output.prellvm");
+    std::ifstream is(argv[1]);
     std::ofstream os("output.ll");
+    // llvm::StructType::create();
     while (is.good() || !is.eof() || is)
     {
         auto ast = parseToken(is);
