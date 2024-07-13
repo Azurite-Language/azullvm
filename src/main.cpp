@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
     }
     // util::init();
     std::ifstream is(argv[1]);
-    std::ofstream os("output.ll");
     // llvm::StructType::create();
     while (is.good() || !is.eof() || is)
     {
@@ -29,5 +28,6 @@ int main(int argc, char *argv[])
     }
 
     printModule(llvm::errs());
+
     return 0;
 }
